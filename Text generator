@@ -1,0 +1,74 @@
+import 'package:flutter/material.dart';
+import 'dart:math';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: TextGenerator(),
+    );
+  }
+}
+
+class TextGenerator extends StatefulWidget {
+  @override
+  _TextGeneratorState createState() => _TextGeneratorState();
+}
+
+class _TextGeneratorState extends State<TextGenerator> {
+  String generatedText = "Press the button to generate text";
+
+  void generateText() {
+    List<String> templates = [
+      "Today is a {culture} day for {activity}.",
+      "{name} loves to {activity} in their free time.",
+      "Nothing makes {name} feel {emotion} like {activity}."
+    ];
+
+    Map<String, List<String>> words = {
+      'name': ['Alex', 'Jane', 'Frank'],
+      'culture': ['wonderful', 'ordinary', 'busy'],
+      'activity': ['read a book', 'go for a walk', 'do sports'],
+      'emotion': ['happy', 'sad', 'inspired']
+    };
+
+    String template = templates[Random().nextInt(templates.length)];
+    String generated = template.replaceAllMapped(RegExp(r'\{(\w+)\}'), (match) {
+      return words[match.group(1)]![Random().nextInt(words[match.group(1)]!.length)];
+    });
+
+    setState(() {
+      generatedText = generated;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Text Generator'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              generatedText,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 24),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: generateText,
+              child: Text('Generate Text'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
